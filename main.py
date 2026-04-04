@@ -1,5 +1,6 @@
 from uteis import leiaint,cabecalho,linha
 from baixar import  baixar_audio
+import validators
 
 def main():
     cabecalho("yt-audio-extractor")
@@ -9,11 +10,8 @@ def main():
         opcao = leiaint('escolha uma opção: ')
         if opcao == 1:
             url = input("URL: ").strip()
-            if not url:
-                print('erro: url não pode ficar vazio! ')
-                continue
-            if not "youtube.com" in url:
-                print('erro: URL inválida! use um link do Youtube!')
+            if not validators.url(url) or ('youtube.com' not in url and "youtu.be" not in url):
+                print(f'erro: URL inválida! use um link do Youtube!')
                 continue
 
             destino = input('DESTINO: ').strip()
