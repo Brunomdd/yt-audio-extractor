@@ -2,25 +2,27 @@ from uteis import leiaint,cabecalho,linha
 from baixar import  baixar_audio
 
 def main():
-
     cabecalho("yt-audio-extractor")
     while True:
-
         print('1 - Converter')
         print('2 - Sair')
         opcao = leiaint('escolha uma opção: ')
         if opcao == 1:
-            url = input('URL: ').strip()
+            url = input("URL: ").strip()
+            if not url:
+                print('erro: url não pode ficar vazio! ')
+                continue
+            if not "youtube.com" in url:
+                print('erro: URL inválida! use um link do Youtube!')
+                continue
+
             destino = input('DESTINO: ').strip()
-            if not destino:
-                resposta = baixar_audio(url)
-                if resposta:
-                    print('Àudio baixado com sucesso!')
-                else:
-                    print('Não foi possivel baixar o áudio')
+            resposta = baixar_audio(url,destino)
+            if resposta['status'] == 'erro':
+                print(f'não foi possível baixar: {resposta['mensagem']}')
             else:
-                resposta = baixar_audio(url, destino)
-                print(f"Àudio baixado com sucesso ao destino {destino}")
+                print("Baixando áudio aguarde...")
+                print(f'Arquivo baixado com sucesso! Caminho: {resposta['caminho']}')
 
         elif opcao == 2:
             cabecalho('Saindo do programa . . .')
@@ -28,4 +30,5 @@ def main():
         else:
             print('Opção inválida')
 
-main()
+if __name__=='__main__':
+    main()
