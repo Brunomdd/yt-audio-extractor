@@ -6,14 +6,14 @@ def baixar_audio(url,destino='.'):
         yt = YouTube(url)
         audio = yt.streams.get_audio_only()
         audio_final = audio.download(output_path=destino)
-        return  audio_final
+        return  {"status":"sucesso","caminho":audio_final}
 
     except VideoRemovedByYouTubeForViolatingTOS:
-        return "o áudio foi removido do youtube por violar os direitos autorais"
+        return {"status:":"erro","mensagem":"o áudio foi removido do youtube por violar os direitos autorais"}
     except VideoUnavailable:
-        return "o áudio está indisponivel!"
+        return {"status:":"erro","mensagem":"o áudio esta indisponível"}
     except Exception as error:
-        return f"Erro ao baixar o áudio {error}"
+        return {"status":"erro","mensagem":f"Erro ao baixar o áudio {error}"}
 
 
 
