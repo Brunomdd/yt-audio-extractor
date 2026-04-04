@@ -1,14 +1,5 @@
 from uteis import leiaint
-from pytubefix import YouTube
-
-def baixar_audio(url):
-    try:
-        yt = YouTube(url)
-        audio = yt.streams.get_audio_only()
-        audio_final = audio.download()
-        return  audio_final
-    except Exception as error:
-        print(f"Erro {error}")
+from baixar import  baixar_audio
 
 def main():
     while True:
@@ -17,8 +8,17 @@ def main():
         opcao = leiaint('escolha uma opção: ')
         if opcao == 1:
             url = input('URL: ').strip()
-            arquivo = baixar_audio(url)
-            print(arquivo)
+            destino = input('DESTINO: ').strip()
+            if not destino:
+                resposta = baixar_audio(url)
+                if resposta:
+                    print('Àudio baixado com sucesso!')
+                else:
+                    print('Não foi possivel baixar o video')
+            else:
+                resposta = baixar_audio(url, destino)
+                print(f"Àudio baixado com sucesso ao destino {destino}")
+
         elif opcao == 2:
             print("Saindo . . . ")
             break
