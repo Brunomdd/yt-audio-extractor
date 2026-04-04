@@ -9,9 +9,9 @@ def baixar_audio(url,destino='.'):
         return  audio_final
 
     except VideoRemovedByYouTubeForViolatingTOS:
-        return "Video foi removido do youtube por violar os direitos autorais"
+        return "o áudio foi removido do youtube por violar os direitos autorais"
     except VideoUnavailable:
-        return "O video está indisponivel!"
+        return "o áudio está indisponivel!"
     except Exception as error:
         return f"Erro ao baixar o áudio {error}"
 
