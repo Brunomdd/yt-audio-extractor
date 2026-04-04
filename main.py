@@ -1,8 +1,11 @@
-from uteis import leiaint
+from uteis import leiaint,cabecalho,linha
 from baixar import  baixar_audio
 
 def main():
+
+    cabecalho("yt-audio-extractor")
     while True:
+
         print('1 - Converter')
         print('2 - Sair')
         opcao = leiaint('escolha uma opção: ')
@@ -20,7 +23,7 @@ def main():
                 print(f"Àudio baixado com sucesso ao destino {destino}")
 
         elif opcao == 2:
-            print("Saindo . . . ")
+            cabecalho('Saindo do programa . . .')
             break
         else:
             print('Opção inválida')
