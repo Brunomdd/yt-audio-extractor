@@ -17,7 +17,7 @@ def main():
                 if resposta:
                     print('Àudio baixado com sucesso!')
                 else:
-                    print('Não foi possivel baixar o video')
+                    print('Não foi possivel baixar o áudio')
             else:
                 resposta = baixar_audio(url, destino)
                 print(f"Àudio baixado com sucesso ao destino {destino}")
