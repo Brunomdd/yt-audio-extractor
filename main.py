@@ -1,6 +1,7 @@
-from uteis import leiaint,cabecalho,linha
+from uteis import leiaint,cabecalho,linha,confirmar
 from baixar import  baixar_audio
 import validators
+from interface import interface
 
 def main():
     cabecalho("yt-audio-extractor")
@@ -15,12 +16,17 @@ def main():
                 continue
 
             destino = input('DESTINO: ').strip()
-            resposta = baixar_audio(url,destino)
-            if resposta['status'] == 'erro':
-                print(f'não foi possível baixar: {resposta['mensagem']}')
+            interface(url)
+            resp = confirmar("Quer baixar o arquivo? [S/N]: ")
+            if resp == "S":
+                resposta = baixar_audio(url, destino)
+                if resposta['status'] == 'sucesso':
+                    print(f'Arquivo baixado com sucesso! Caminho: {resposta['caminho']}')
+                else:
+                    if resposta['status'] == 'erro':
+                        print(f'não foi possível baixar: {resposta['mensagem']}')
             else:
-                print("Baixando áudio aguarde...")
-                print(f'Arquivo baixado com sucesso! Caminho: {resposta['caminho']}')
+                print("Download cancelado")
 
         elif opcao == 2:
             cabecalho('Saindo do programa . . .')
