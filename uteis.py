@@ -13,3 +13,13 @@ def leiaint(msg):
             return valor
         except ValueError:
             print('Erro, digite um número inteiro!')
+
+def confirmar(msg):
+    while True:
+        resp = str(input(msg)).strip().upper()
+        if resp in ('S','N'):
+            return resp
+
+
+
+
