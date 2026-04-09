@@ -28,12 +28,15 @@ O objetivo é oferecer uma ferramenta simples, rápida e amigável no terminal p
 
 ### Bibliotecas Python
 
-- [`pytubefix`](https://pypi.org/project/pytubefix/): fork do `pytube` para download de vídeos/áudios do YouTube com correções mais recentes.[web:317]
-  - Usado para criar objetos `YouTube` e acessar `yt.streams.get_audio_only()`.
+Instale as dependências manualmente:
+
+```bash
+pip install pytubefix colorama validators
+```
+
+- [`pytubefix`](https://pypi.org/project/pytubefix/): fork do `pytube` para download de vídeos/áudios do YouTube.[web:317]
 - [`colorama`](https://pypi.org/project/colorama/): adiciona cores ao terminal de forma portátil (Windows, Linux, macOS).[web:321]
-  - Usado para destacar mensagens de erro, sucesso e cabeçalhos.
 - [`validators`](https://validators.readthedocs.io/): fornece funções de validação, incluindo validação de URL.[web:322]
-  - Usado para checar se a URL informada é bem formada (antes de testar se é do YouTube).
 
 Outras dependências são da biblioteca padrão do Python (`os`, etc.).
 
@@ -60,13 +63,7 @@ source .venv/bin/activate  # Linux/macOS
 Instalar as dependências:
 
 ```bash
-pip install -r requirements.txt
-```
-
-Se você ainda não tiver o `requirements.txt`, pode gerar assim (no seu ambiente local):
-
-```bash
-pip freeze > requirements.txt
+pip install pytubefix colorama validators
 ```
 
 ---
@@ -101,7 +98,7 @@ Fluxo da opção **Converter**:
    - Valida se pertence ao domínio do YouTube (`"youtube.com"` ou `"youtu.be"`).
 
 2. **Criação do objeto `YouTube`**  
-   - Se a URL for válida, é criado um objeto `yt = YouTube(url)` (a partir de `pytubefix`).[web:292]
+   - Se a URL for válida, é criado um objeto `yt = YouTube(url)` (a partir de `pytubefix`).  
 
 3. **Destino do arquivo**  
    - Você informa o diretório de destino.
@@ -137,7 +134,7 @@ Fluxo da opção **Converter**:
 
 ---
 
-## Estrutura do projeto (sugestão)
+## Estrutura do projeto
 
 ```text
 yt-audio-extractor/
@@ -145,13 +142,12 @@ yt-audio-extractor/
 ├── baixar.py        # Função baixar_audio(yt, destino)
 ├── interface.py     # Exibição de informações do vídeo (título, duração, etc.)
 ├── uteis.py         # Funções auxiliares: cabecalho, linha, leiaint, confirmar...
-├── requirements.txt # Dependências do projeto
 └── README.md        # Este arquivo
 ```
 
 ---
 
-## Explicação dos módulos e funções
+## Explicação dos módulos
 
 ### `main.py`
 
@@ -166,117 +162,68 @@ Responsável por:
   - `interface(yt)` para mostrar informações.
   - `baixar_audio(yt, destino)` para fazer o download.
 
-Esse módulo é o “cérebro” do fluxo da aplicação.
-
 ---
 
 ### `uteis.py`
 
-**Objetivo:** concentrar funções reutilizáveis, deixando o código mais limpo e organizado.
+Funções auxiliares que deixam o código mais organizado:
 
-- `linha(txt=32)`  
-  Retorna uma string com `-` repetidos, usada como separador visual no terminal.
-
-- `cabecalho(txt)`  
-  Imprime um cabeçalho com bordas usando `linha()`, centralizando o texto em 32 caracteres. Pode ser combinado com `Fore` e `Style` (do `colorama`) para colorir o título.
-
-- `leiaint(msg)`  
-  Lê um número inteiro do usuário, tratando `ValueError`:
-  - Enquanto o usuário não digitar um inteiro válido, mostra uma mensagem de erro em vermelho usando `colorama`.
-
-- `confirmar(msg)`  
-  Lê uma resposta do usuário e só aceita `S` ou `N`:
-  - Remove espaços (`strip()`).
-  - Converte para maiúsculas (`upper()`).
-  - Se for diferente de `S` ou `N`, mostra mensagem de erro em vermelho e pergunta novamente.
+- `linha(txt=32)`: retorna uma string com `-` repetidos (separador visual).
+- `cabecalho(txt)`: imprime um cabeçalho com bordas, centralizando o texto.
+- `leiaint(msg)`: lê um inteiro do usuário, tratando `ValueError` e exibindo mensagem de erro amigável (com `colorama`).
+- `confirmar(msg)`: só aceita respostas `S` ou `N`, repetindo enquanto a entrada for inválida.
 
 ---
 
 ### `baixar.py`
 
-**Objetivo:** encapsular toda a lógica de download do áudio.
-
-Assinatura atual (conceito):
+Encapsula a lógica de download do áudio:
 
 ```python
 def baixar_audio(yt, destino='.'):
-    ...
+    try:
+        audio = yt.streams.get_audio_only()
+        audio_final = audio.download(output_path=destino)
+        return {"status": "sucesso", "caminho": audio_final}
+    except VideoRemovedByYouTubeForViolatingTOS:
+        return {"status": "erro", "mensagem": "o áudio foi removido do youtube por violar os direitos autorais"}
+    except VideoUnavailable:
+        return {"status": "erro", "mensagem": "o áudio está indisponível"}
+    except Exception as error:
+        return {"status": "erro", "mensagem": f"Erro ao baixar o áudio: {error}"}
 ```
-
-Passos principais:
-
-1. Recebe um objeto `YouTube` já instanciado e um destino.
-2. Seleciona o stream de áudio:
-   ```python
-   audio = yt.streams.get_audio_only()
-   ```
-3. Baixa o arquivo de áudio para a pasta de destino:
-   ```python
-   audio_final = audio.download(output_path=destino)
-   ```
-4. Retorna um dicionário com:
-   - Em caso de sucesso:
-     ```python
-     {"status": "sucesso", "caminho": audio_final}
-     ```
-   - Em caso de erro específico:
-     - `VideoRemovedByYouTubeForViolatingTOS`: áudio removido por violação de direitos/autorização.
-     - `VideoUnavailable`: áudio indisponível.
-   - Em caso de erro genérico:
-     ```python
-     {"status": "erro", "mensagem": f"Erro ao baixar o áudio: {error}"}
-     ```
 
 ---
 
 ### `interface.py`
 
-**Objetivo:** mostrar informações amigáveis do vídeo antes do download.
+Responsável por exibir informações amigáveis do vídeo:
 
-Fluxo típico:
-
-- Recebe o objeto `yt` (instância de `YouTube`).
-- Lê atributos como:
-  - `yt.title`
-  - `yt.author` (ou canal)
-  - `yt.length` (duração em segundos)[web:292]
-- Converte `yt.length` em minutos e segundos:
-  - `minutos = yt.length // 60`
-  - `segundos = yt.length % 60`
-- Imprime essas informações formatadas e, opcionalmente, com cores (`colorama`).
+- Recebe o objeto `yt`.
+- Mostra título, canal, duração, etc.
+- Converte `yt.length` (segundos) para minutos e segundos para exibição.
 
 ---
 
 ## Tratamento de erros
 
-O projeto trata erros em dois níveis:
-
-1. **Erros de entrada do usuário**
-   - Números inválidos no menu → tratados por `leiaint`.
-   - Respostas diferentes de `S` ou `N` → tratadas por `confirmar`.
-   - URL inválida ou que não é do YouTube → bloqueia antes de tentar criar o objeto `YouTube`.
-
-2. **Erros de download / YouTube**
-   - Vídeo removido por violação de termos.
-   - Vídeo indisponível.
-   - Exceções genéricas (problemas de rede, mudanças na API, etc.).
-
-As mensagens são pensadas para serem claras e amigáveis para o usuário.
+- Erros de entrada:
+  - Menu: `leiaint` garante inteiro válido.
+  - Confirmação: `confirmar` garante resposta `S` ou `N`.
+  - URL: validação com `validators` e checagem do domínio YouTube.
+- Erros de download:
+  - Vídeo removido por violação de termos.
+  - Vídeo indisponível.
+  - Exceções genéricas tratadas com mensagem descritiva.
 
 ---
 
-## Ideias de futuras melhorias
+## Ideias futuras
 
-- Implementar o **Histórico de Download**:
-  - Gravar cada download em um arquivo (JSON, CSV ou SQLite).
-  - Mostrar uma lista de downloads com filtros (por data, por vídeo, etc.).
-- Permitir escolher:
-  - Qualidade/bitragem de áudio.
-  - Formato de saída (por exemplo, `.mp3` após conversão).
-- Criar testes automatizados com `pytest` para:
-  - `uteis.py` (validação de entrada).
-  - `baixar.py` (com mocks para não chamar o YouTube de verdade).
-- Adicionar suporte a múltiplos idiomas (pt-BR, en, etc.).
+- Implementar o **Histórico de Download**.
+- Permitir escolher qualidade/bitrate do áudio.
+- Adicionar testes automatizados com `pytest`.
+- Suporte a múltiplos idiomas (pt-BR, en, etc.).
 
 ---
 
