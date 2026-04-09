@@ -279,3 +279,8 @@ As mensagens são pensadas para serem claras e amigáveis para o usuário.
 - Adicionar suporte a múltiplos idiomas (pt-BR, en, etc.).
 
 ---
+
+## Licença
+
+Este projeto está licenciado sob a licença MIT.
+
