@@ -1,7 +1,5 @@
 # yt-audio-extractor
 
-# yt-audio-extractor
-
 Aplicação de linha de comando em Python para baixar o **áudio** de vídeos do YouTube a partir de uma URL informada pelo usuário.
 
 O objetivo é oferecer uma ferramenta simples, rápida e amigável no terminal para extrair apenas o áudio de vídeos (por exemplo, para ouvir offline).
