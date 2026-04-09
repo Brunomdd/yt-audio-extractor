@@ -1,17 +1,17 @@
-from pytubefix import YouTube
+from  pytubefix import YouTube
 from pytubefix.exceptions import VideoRemovedByYouTubeForViolatingTOS, VideoUnavailable
 
-def baixar_audio(url,destino='.'):
+def baixar_audio(yt,destino='.'):
     try:
-        yt = YouTube(url)
         audio = yt.streams.get_audio_only()
         audio_final = audio.download(output_path=destino)
-        return  {"status":"sucesso","caminho":audio_final}
+        return {"status":"sucesso","caminho":audio_final}
+
 
     except VideoRemovedByYouTubeForViolatingTOS:
-        return {"status:":"erro","mensagem":"o áudio foi removido do youtube por violar os direitos autorais"}
+        return {"status":"erro","mensagem":"o áudio foi removido do youtube por violar os direitos autorais"}
     except VideoUnavailable:
-        return {"status:":"erro","mensagem":"o áudio esta indisponível"}
+        return {"status":"erro","mensagem":"o áudio esta indisponível"}
     except Exception as error:
         return {"status":"erro","mensagem":f"Erro ao baixar o áudio {error}"}
 
