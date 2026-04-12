@@ -1,9 +1,8 @@
 # yt-audio-extractor
 
-
 Aplicação de linha de comando em Python para baixar o **áudio** de vídeos do YouTube a partir de uma URL informada pelo usuário.
 
-O projeto usa a biblioteca [`pytubefix`](https://pypi.org/project/pytubefix/) para acessar os streams do YouTube, `colorama` para destacar mensagens no terminal e `validators` para validar URLs.[web:317][web:321][web:319]
+O projeto usa a biblioteca [`pytubefix`](https://pypi.org/project/pytubefix/) para acessar os streams do YouTube, `colorama` para destacar mensagens no terminal e `validators` para validar URLs.
 
 ---
 
@@ -26,8 +25,8 @@ O projeto usa a biblioteca [`pytubefix`](https://pypi.org/project/pytubefix/) pa
 - **Linguagem:** Python 3.8+ (recomendado)
 - **Bibliotecas:**
   - [`pytubefix`](https://pypi.org/project/pytubefix/) – download de vídeos/áudios do YouTube.[web:317]
-  - [`colorama`](https://pypi.org/project/colorama/) – texto colorido no terminal.[web:321]
-  - [`validators`](https://python-validators.github.io/validators/reference/url/) – validação de URLs.[web:319]
+  - [`colorama`](https://pypi.org/project/colorama/) – texto colorido no terminal.
+  - [`validators`](https://python-validators.github.io/validators/reference/url/) – validação de URLs.
 
 Instalação das dependências:
 
@@ -88,8 +87,8 @@ escolha uma opção:
 1. Informe a **URL** do vídeo do YouTube.
 2. O sistema valida:
    - se a URL é bem formada (`validators.url`);
-   - se o domínio pertence ao YouTube (`youtube.com` ou `youtu.be`).[web:319]
-3. Se for válida, o sistema carrega os dados do vídeo com `pytubefix.YouTube`.[web:317]
+   - se o domínio pertence ao YouTube (`youtube.com` ou `youtu.be`)
+3. Se for válida, o sistema carrega os dados do vídeo com `pytubefix.YouTube`
 4. Informe o **diretório de destino**:
    - Se deixar em branco, será usado o diretório atual (`.`).
    - Se informar um caminho, ele será criado se não existir.
